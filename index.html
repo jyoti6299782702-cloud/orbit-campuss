@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Orbit Campus | Home</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .hero-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 3rem 8%;
+      background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+      gap: 2rem;
+    }
+    .hero-content { flex: 1; max-width: 550px; }
+    .hero-content h1 { font-size: 3.2rem; font-weight: 800; color: #1e1b4b; line-height: 1.1; margin-bottom: 1rem; }
+    .hero-content h1 span { color: var(--primary-color); }
+    .hero-content p { font-size: 1.25rem; color: #475569; margin-bottom: 2rem; }
+    .hero-image-wrapper { flex: 1; display: flex; justify-content: center; }
+    .hero-image-wrapper img { width: 100%; max-width: 500px; height: 380px; object-fit: cover; border-radius: 20px; box-shadow: var(--shadow-md); }
+    
+    .section-title { text-align: center; margin: 3rem 0 1.5rem; color: var(--navy-dark); }
+    .how-it-works, .categories { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; max-width: 1100px; margin: 0 auto 3rem; padding: 0 1rem; }
+    .card { 
+      background: white; 
+      padding: 1.5rem; 
+      border-radius: 12px; 
+      border: 1px solid var(--border-color); 
+      text-align: center; 
+      box-shadow: var(--shadow-sm); 
+      transition: transform 0.2s;
+    }
+    .card:hover { transform: translateY(-5px); }
+    .card-icon { font-size: 2.2rem; margin-bottom: 0.5rem; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <nav class="navbar">
+    <a href="index.html" class="brand">🪐 Orbit Campus</a>
+    <ul class="nav-links" id="navbarLinks">
+      <!-- JavaScript dynamic render -->
+    </ul>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-container">
+    <div class="hero-content">
+      <h1>Orbit<span>Campus</span></h1>
+      <p>Making Campus Life Better, Together 🚀</p>
+      
+      <!-- Home Page Hero Buttons -->
+      <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <button onclick="checkAccessAndNavigate('report.html')" class="btn btn-sky" style="padding: 0.8rem 1.6rem;">📝 Report Issue</button>
+        <button onclick="checkAccessAndNavigate('dashboard.html')" class="btn btn-outline" style="padding: 0.8rem 1.6rem;">📊 Dashboard</button>
+      </div>
+    </div>
+    <div class="hero-image-wrapper">
+      <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1000&auto=format&fit=crop" alt="Campus Life Student">
+    </div>
+  </section>
+
+  <!-- How It Works Section (Clean 3-Step Flow) -->
+  <h2 class="section-title">How It Works ⚙️</h2>
+  <section class="how-it-works">
+    <div class="card" style="cursor: pointer;" onclick="checkAccessAndNavigate('report.html')">
+      <div class="card-icon">📝</div>
+      <h3>1. Report Issue</h3>
+      <p>Submit campus problems in a few clicks.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔍</div>
+      <h3>2. Admin Reviews</h3>
+      <p>Our team reviews and prioritizes the issue.</p>
+    </div>
+    <div class="card" style="cursor: pointer;" onclick="checkAccessAndNavigate('dashboard.html')">
+      <div class="card-icon">✅</div>
+      <h3>3. Issue Resolved</h3>
+      <p>Track live status updates on the dashboard.</p>
+    </div>
+  </section>
+
+  <!-- Categories Section -->
+  <h2 class="section-title">Explore Issue Categories 📂</h2>
+  <section class="categories">
+    <div class="card"><div class="card-icon">📶</div><h3>Wi-Fi Issues</h3><p>Internet & Connectivity</p></div>
+    <div class="card"><div class="card-icon">🧪</div><h3>Lab Equipment</h3><p>Labs & Instruments</p></div>
+    <div class="card"><div class="card-icon">🪑</div><h3>Classroom</h3><p>Furniture & Facilities</p></div>
+    <div class="card"><div class="card-icon">📚</div><h3>Library</h3><p>Books & Resources</p></div>
+  </section>
+
+  <!-- Login/Register Popup Modal -->
+  <div id="authModal" class="modal-overlay">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeAuthModal()">&times;</span>
+      <div class="auth-tabs">
+        <button class="tab-btn active" id="tabLogin" onclick="switchTab('login')">🔑 Login</button>
+        <button class="tab-btn" id="tabRegister" onclick="switchTab('register')">📝 Register</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="modalLoginForm" class="auth-form active">
+        <div class="form-group">
+          <label>📧 Email</label>
+          <input type="email" id="modalLoginEmail" class="form-control" placeholder="Enter email" required>
+        </div>
+        <div class="form-group">
+          <label>🔒 Password</label>
+          <input type="password" id="modalLoginPass" class="form-control" placeholder="Enter password" required>
+        </div>
+        <button type="submit" class="btn btn-sky" style="width: 100%; justify-content: center; margin-top: 1rem;">Login 🚀</button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="modalRegisterForm" class="auth-form">
+        <div class="form-group">
+          <label>👤 Full Name</label>
+          <input type="text" id="modalRegName" class="form-control" placeholder="Enter full name" required>
+        </div>
+        <div class="form-group">
+          <label>📧 Email</label>
+          <input type="email" id="modalRegEmail" class="form-control" placeholder="Enter email" required>
+        </div>
+        <div class="form-group">
+          <label>🔒 Password</label>
+          <input type="password" id="modalRegPass" class="form-control" placeholder="Create password" required>
+        </div>
+        <div class="form-group">
+          <label>🎭 Select Role</label>
+          <select id="modalRegRole" class="form-control" onchange="toggleAdminKeyInput()" required>
+            <option value="student">Student</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        
+        <!-- Secret Admin Passcode Field -->
+        <div class="form-group" id="adminKeyGroup" style="display: none;">
+          <label>🔑 Secret Admin Passcode</label>
+          <input type="password" id="modalAdminKey" class="form-control" placeholder="Enter Admin Secret Code">
+        </div>
+
+        <button type="submit" class="btn btn-sky" style="width: 100%; justify-content: center; margin-top: 1rem;">Create Account ✨</button>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Orbit Campus. All rights reserved.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

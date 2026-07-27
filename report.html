@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Orbit Campus | Report Complaint</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .form-container {
+      max-width: 650px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border-color);
+    }
+    .form-row { display: flex; gap: 15px; }
+    .form-row .form-group { flex: 1; }
+    .radio-group { display: flex; gap: 1.5rem; margin-top: 0.4rem; }
+    
+    /* OTP Display Box Styling */
+    .otp-display-box {
+      background: var(--light-bg-accent);
+      color: var(--primary-color);
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 4px;
+      margin-bottom: 1rem;
+      border: 1px dashed var(--primary-color);
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="brand">🪐 Orbit Campus</a>
+    <ul class="nav-links" id="navbarLinks"></ul>
+  </nav>
+
+  <div class="form-container">
+    <h2 style="text-align: center; margin-bottom: 0.5rem;">⚠️ Report a Complaint</h2>
+    <p style="text-align: center; color: #64748b; margin-bottom: 1.5rem;">Help Orbit Campus improve by submitting your issue details below.</p>
+
+    <form id="complaintForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label>👤 Student Name</label>
+          <input type="text" id="studentName" class="form-control" placeholder="Enter full name" required>
+        </div>
+        <div class="form-group">
+          <label>🔢 Roll Number / ID</label>
+          <input type="text" id="rollNo" class="form-control" placeholder="e.g. CS2026-042" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>🎓 Class / Semester</label>
+          <input type="text" id="className" class="form-control" placeholder="e.g. B.Tech 5th Sem" required>
+        </div>
+        <div class="form-group">
+          <label>📅 Date of Incident</label>
+          <input type="date" id="incidentDate" class="form-control" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>🏛️ Department</label>
+          <select id="department" class="form-control" required>
+            <option value="">Select Department</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Electrical Engineering">Electrical Engineering</option>
+            <option value="Mechanical Engineering">Mechanical Engineering</option>
+            <option value="Management">Management</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>🏷️ Category</label>
+          <select id="category" class="form-control" required>
+            <option value="">Select Category</option>
+            <option value="Wi-Fi">📶 Wi-Fi</option>
+            <option value="Lab Equipment">🧪 Lab Equipment</option>
+            <option value="Classroom">🪑 Classroom</option>
+            <option value="Library">📚 Library</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>🚩 Priority Level</label>
+        <div class="radio-group">
+          <label><input type="radio" name="priority" value="Low" checked> Low 🟢</label>
+          <label><input type="radio" name="priority" value="Medium"> Medium 🟠</label>
+          <label><input type="radio" name="priority" value="High"> High 🔴</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>💬 Description</label>
+        <textarea id="description" class="form-control" rows="4" maxlength="500" placeholder="Describe the issue in detail..." required></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-sky" style="width: 100%; justify-content: center; margin-top: 1rem;">🚀 Submit Complaint</button>
+    </form>
+  </div>
+
+  <!-- OTP Verification Popup Modal -->
+  <div id="otpModal" class="modal-overlay">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeOtpModal()">&times;</span>
+      <h3 style="text-align: center; margin-bottom: 0.5rem; color: var(--navy-dark);">📲 OTP Verification</h3>
+      <p style="text-align: center; color: #64748b; font-size: 0.9rem; margin-bottom: 1rem;">Enter the verification OTP sent to process your request.</p>
+
+      <!-- Simulated Demo OTP -->
+      <div class="otp-display-box">
+        Your OTP: <span id="generatedOtp">123456</span>
+      </div>
+
+      <form id="otpForm">
+        <div class="form-group">
+          <label>🔢 Enter 6-Digit OTP</label>
+          <input type="text" id="userOtpInput" class="form-control" placeholder="e.g. 123456" maxlength="6" required>
+        </div>
+        <button type="submit" class="btn btn-sky" style="width: 100%; justify-content: center; margin-top: 1rem;">✅ Verify & Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <footer><p>&copy; 2026 Orbit Campus. All rights reserved.</p></footer>
+
+  <script src="script.js"></script>
+  <script>
+    if(!getCurrentUser()) window.location.href = 'index.html';
+    document.getElementById('incidentDate').valueAsDate = new Date();
+
+    let tempIssueData = null;
+    let currentOTP = null;
+
+    // Trigger OTP modal on Form Submission
+    document.getElementById('complaintForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Store form data temporarily
+      tempIssueData = {
+        name: document.getElementById('studentName').value,
+        rollNo: document.getElementById('rollNo').value,
+        className: document.getElementById('className').value,
+        incidentDate: document.getElementById('incidentDate').value,
+        department: document.getElementById('department').value,
+        category: document.getElementById('category').value,
+        priority: document.querySelector('input[name="priority"]:checked').value,
+        description: document.getElementById('description').value
+      };
+
+      // Generate 6 Digit Random OTP
+      currentOTP = Math.floor(100000 + Math.random() * 900000).toString();
+      document.getElementById('generatedOtp').innerText = currentOTP;
+      
+      // Show OTP Modal
+      document.getElementById('otpModal').style.display = 'flex';
+    });
+
+    function closeOtpModal() {
+      document.getElementById('otpModal').style.display = 'none';
+    }
+
+    // Verify OTP and Save
+    document.getElementById('otpForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const enteredOtp = document.getElementById('userOtpInput').value.trim();
+
+      if (enteredOtp === currentOTP) {
+        createIssue(tempIssueData);
+        alert('🎉 OTP Verified! Complaint submitted successfully.');
+        window.location.href = 'dashboard.html';
+      } else {
+        alert('❌ Incorrect OTP! Please try again.');
+      }
+    });
+  </script>
+</body>
+</html>

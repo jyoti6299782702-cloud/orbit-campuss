@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Orbit Campus | Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .data-table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: var(--shadow-sm); }
+    .data-table th, .data-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border-color); }
+    .data-table th { background-color: #f3e8ff; color: var(--navy-dark); }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+    .stat-card { background-color: white; padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 15px; }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="brand">🪐 Orbit Campus</a>
+    <ul class="nav-links" id="navbarLinks"></ul>
+  </nav>
+
+  <div class="app-container">
+    <aside class="sidebar">
+      <ul class="sidebar-menu">
+        <li><a href="dashboard.html" class="active">📊 Dashboard</a></li>
+        <li><a href="#" onclick="checkAccessAndNavigate('report.html')">📝 New Complaint</a></li>
+      </ul>
+    </aside>
+
+    <main class="main-content">
+      <h2>📊 Issues Overview</h2>
+      <p style="color: #64748b; margin-bottom: 1.5rem;">Track real-time status of all reported campus concerns.</p>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div style="font-size: 2rem;">📋</div>
+          <div><h3 id="totalCount">0</h3><p style="color:#64748b; font-size: 0.85rem;">Total Reported</p></div>
+        </div>
+        <div class="stat-card">
+          <div style="font-size: 2rem;">✅</div>
+          <div><h3 id="resolvedCount">0</h3><p style="color:#64748b; font-size: 0.85rem;">Resolved</p></div>
+        </div>
+        <div class="stat-card">
+          <div style="font-size: 2rem;">⏳</div>
+          <div><h3 id="pendingCount">0</h3><p style="color:#64748b; font-size: 0.85rem;">Pending Resolution</p></div>
+        </div>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr><th>ID</th><th>Date</th><th>Category</th><th>Priority</th><th>Status</th><th>Description</th></tr>
+        </thead>
+        <tbody id="dashboardTableBody"></tbody>
+      </table>
+      <div id="emptyMessage" style="display:none; text-align:center; padding:3rem; color:#94a3b8;">📥 No complaints filed yet!</div>
+    </main>
+  </div>
+
+  <footer><p>&copy; 2026 Orbit Campus. All rights reserved.</p></footer>
+
+  <script src="script.js"></script>
+  <script>
+    if(!getCurrentUser()) window.location.href = 'index.html';
+
+    function renderDashboard() {
+      const issues = getIssues();
+      const tbody = document.getElementById('dashboardTableBody');
+      tbody.innerHTML = '';
+
+      document.getElementById('totalCount').innerText = issues.length;
+      document.getElementById('resolvedCount').innerText = issues.filter(i => i.status === 'Resolved').length;
+      document.getElementById('pendingCount').innerText = issues.filter(i => i.status !== 'Resolved').length;
+
+      if (issues.length === 0) {
+        document.getElementById('emptyMessage').style.display = 'block';
+        return;
+      }
+
+      document.getElementById('emptyMessage').style.display = 'none';
+      issues.forEach(issue => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><strong>${issue.id}</strong></td>
+          <td><small style="color:#64748b">${issue.incidentDate}</small></td>
+          <td>${issue.category}</td>
+          <td><span class="badge badge-${issue.priority.toLowerCase()}">${issue.priority}</span></td>
+          <td><span class="badge status-${issue.status.toLowerCase().replace(' ', '')}">${issue.status}</span></td>
+          <td>${issue.description}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    renderDashboard();
+  </script>
+</body>
+</html>
