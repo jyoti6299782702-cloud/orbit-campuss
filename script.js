@@ -36,27 +36,34 @@ function getCurrentUser() {
   return JSON.parse(localStorage.getItem(USER_KEY) || 'null');
 }
 
-// Navigation & Passcode Protection Gate
+// Navigation & Security Gate Check
 function checkAccessAndNavigate(targetUrl) {
   const user = getCurrentUser();
 
-  // Home page navigation - no restriction
+  // Home Page direct access
   if (targetUrl === 'index.html') {
     window.location.href = targetUrl;
     return;
   }
-  
-  // If user is NOT logged in, show Auth Modal popup
+
+  // Logged in check
   if (!user) {
     openAuthModal(targetUrl);
     return;
   }
 
-  // Admin Panel Passcode Check (Secret Key: ORBIT2026)
+  // Admin trying to Report Issue restriction
+  if (targetUrl === 'report.html' && user.role === 'admin') {
+    alert('⛔ Access Restricted! Only students can submit complaints. As an Admin, you can review and resolve issues in the Admin Panel.');
+    return;
+  }
+
+  // Admin Panel Passcode Protection (Code: ORBIT2026)
   if (targetUrl === 'admin.html') {
     const enteredCode = prompt('🔑 Restricted Area! Enter Admin Passcode to open Admin Panel:');
     
     if (enteredCode === "ORBIT2026") {
+      sessionStorage.setItem('admin_verified', 'true');
       window.location.href = targetUrl;
     } else if (enteredCode !== null) {
       alert('❌ Incorrect Passcode! Access Denied.');
@@ -82,6 +89,7 @@ function closeAuthModal() {
 
 function logoutUser() {
   localStorage.removeItem(USER_KEY);
+  sessionStorage.removeItem('admin_verified');
   window.location.href = 'index.html';
 }
 
@@ -106,7 +114,7 @@ function toggleAdminKeyInput() {
   }
 }
 
-// Render Header Links (Home remains publicly accessible)
+// Navbar Render
 function renderNavbar() {
   const user = getCurrentUser();
   const navContainer = document.getElementById('navbarLinks');
@@ -132,11 +140,11 @@ function renderNavbar() {
   }
 }
 
-// Event Listeners for Login / Register Modal
+// Modal Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
   renderNavbar();
 
-  // Register Handler
+  // Register
   const regForm = document.getElementById('modalRegisterForm');
   if (regForm) {
     regForm.addEventListener('submit', function(e) {
@@ -173,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Login Handler
+  // Login
   const loginForm = document.getElementById('modalLoginForm');
   if (loginForm) {
     loginForm.addEventListener('submit', function(e) {
@@ -188,9 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('orbit_current_user', JSON.stringify(user));
         alert(`Welcome back, ${user.name}!`);
         
-        // Post-login redirect logic
         let redirectUrl = document.getElementById('authModal').dataset.redirect;
-        
         if (!redirectUrl || redirectUrl === 'index.html') {
           redirectUrl = 'dashboard.html';
         }
