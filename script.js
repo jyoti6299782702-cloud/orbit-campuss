@@ -52,9 +52,15 @@ function checkAccessAndNavigate(targetUrl) {
     return;
   }
 
-  // Admin trying to Report Issue restriction
+  // SIRF REPORT ISSUE PAR ADMIN RESTRICTION HAIN
   if (targetUrl === 'report.html' && user.role === 'admin') {
     alert('⛔ Access Restricted! Only students can submit complaints. As an Admin, you can review and resolve issues in the Admin Panel.');
+    return;
+  }
+
+  // DASHBOARD HAR KOI (STUDENT + ADMIN) DEKH SAKTA HAI
+  if (targetUrl === 'dashboard.html') {
+    window.location.href = targetUrl;
     return;
   }
 
